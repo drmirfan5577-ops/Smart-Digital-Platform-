@@ -61,14 +61,16 @@ const GlobalTab: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             {TRENDING.map((t) => (
-              <div
+              <a
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(t.tag)}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 key={t.tag}
                 className="px-2 py-1 rounded-full flex items-center gap-1"
                 style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', border: '1px solid #bfdbfe' }}
               >
                 <span className="text-xs font-semibold text-blue-700">{t.tag}</span>
-                <span className="text-[9px] text-blue-400">{t.posts}</span>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -76,7 +78,7 @@ const GlobalTab: React.FC = () => {
 
       {/* Communities */}
       <div className="px-4">
-        <h2 className="text-sm font-bold text-gray-700 mb-3">Featured Communities</h2>
+        <h2 className="text-sm font-bold text-gray-700 mb-3">Explore Communities & Channels</h2>
         <div className="space-y-2">
           {COMMUNITIES.map((c) => (
             <div
@@ -100,14 +102,16 @@ const GlobalTab: React.FC = () => {
                 <p className="text-xs text-gray-500 mt-0.5">{c.desc}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-bold" style={{ color: c.color }}>{c.members}</p>
-                <p className="text-[9px] text-gray-400">members</p>
-                <button
-                  className="mt-1 px-2 py-0.5 rounded-full text-[9px] font-semibold text-white"
+
+                <a
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(c.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-semibold text-white"
                   style={{ background: c.color }}
                 >
-                  Join
-                </button>
+                  Explore
+                </a>
               </div>
             </div>
           ))}

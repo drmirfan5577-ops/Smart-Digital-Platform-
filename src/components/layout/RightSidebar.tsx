@@ -5,12 +5,19 @@ import ThemeSelector from '@/components/features/ThemeSelector';
 import { useState } from 'react';
 
 const RightSidebar: React.FC = () => {
-  const { rightSidebarOpen, toggleRightSidebar } = useAppStore();
+  const { rightSidebarOpen, toggleRightSidebar, setActiveTab, bookmarks, addBookmark, removeBookmark } = useAppStore();
   const [showThemes, setShowThemes] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [bookmarkUrl, setBookmarkUrl] = useState('');
+  const [error, setError] = useState('');
 
   const handleItemClick = (id: string) => {
     if (id === 'themes') {
       setShowThemes(true);
+    } else if (id === 'bookmarks' || id === 'favorites') {
+      setShowBookmarks(true);
+    } else {
+      setActiveTab('home');
     }
   };
 
@@ -37,7 +44,12 @@ const RightSidebar: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
-          {RIGHT_SIDEBAR_ITEMS.map((item) => (
+          {RIGHT_SIDEBAR_ITEMS.map((item) => item.url ? (
+            <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 px-2 py-2.5 hover:bg-white/60 rounded-lg mx-1">
+              <span className="text-xl">{item.icon}</span>
+              <span className="text-[9px] text-gray-500 font-medium text-center leading-tight">{item.label}</span>
+            </a>
+          ) : (
             <button
               key={item.id}
               onClick={() => handleItemClick(item.id)}
@@ -51,6 +63,28 @@ const RightSidebar: React.FC = () => {
         </div>
       </div>
 
+      {showBookmarks && (
+        <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center p-4" onClick={() => setShowBookmarks(false)}>
+          <section role="dialog" aria-modal="true" aria-label="Bookmarks and favorites" className="bg-white rounded-2xl p-4 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between mb-3"><h2 className="font-bold">Bookmarks & Favorites</h2><button aria-label="Close bookmarks" onClick={() => setShowBookmarks(false)}><X size={18} /></button></div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              try {
+                const url = new URL(bookmarkUrl.includes('://') ? bookmarkUrl : `https://${bookmarkUrl}`);
+                if (!['https:', 'http:'].includes(url.protocol) || !url.hostname.includes('.')) throw new Error();
+                addBookmark(url.href); setBookmarkUrl(''); setError('');
+              } catch { setError('Enter a valid website address.'); }
+            }} className="flex gap-2">
+              <input aria-label="Website to bookmark" value={bookmarkUrl} onChange={(e) => setBookmarkUrl(e.target.value)} placeholder="https://example.com" required className="border rounded-lg p-2 min-w-0 flex-1 text-sm" />
+              <button className="bg-blue-700 text-white px-3 rounded-lg">Save</button>
+            </form>
+            {error && <p role="alert" className="text-red-700 text-xs mt-2">{error}</p>}
+            <p className="text-xs text-gray-500 my-3">Saved in this browser. Select a link to open it in a new tab.</p>
+            {!bookmarks.length && <p className="text-sm text-gray-600">Add a favorite website above to get started.</p>}
+            <ul className="max-h-64 overflow-y-auto space-y-3">{bookmarks.filter((url) => /^https?:\/\//i.test(url)).map((url) => <li key={url} className="flex gap-2"><a className="text-blue-700 text-sm truncate flex-1 underline" href={url} target="_blank" rel="noopener noreferrer">{url}</a><button className="text-xs text-gray-500" onClick={() => removeBookmark(url)}>Remove</button></li>)}</ul>
+          </section>
+        </div>
+      )}
       {showThemes && (
         <ThemeSelector onClose={() => setShowThemes(false)} />
       )}
