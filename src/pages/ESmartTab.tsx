@@ -12,22 +12,22 @@ const UNIORBI_APPS = [
 ];
 
 const INTEGRATIONS = [
-  { name: 'YouTube', icon: '▶️', color: '#ff0000' },
-  { name: 'WhatsApp', icon: '💬', color: '#25d366' },
-  { name: 'Facebook', icon: '📘', color: '#1877f2' },
-  { name: 'Twitter X', icon: '🐦', color: '#000000' },
-  { name: 'TikTok', icon: '🎵', color: '#010101' },
-  { name: 'Instagram', icon: '📸', color: '#e1306c' },
-  { name: 'Telegram', icon: '✈️', color: '#0088cc' },
-  { name: 'Netlify', icon: '🚀', color: '#00c7b7' },
-  { name: 'GitHub', icon: '🐙', color: '#24292f' },
-  { name: 'Vercel', icon: '▲', color: '#000000' },
-  { name: 'Firebase', icon: '🔥', color: '#ff6d00' },
-  { name: 'Supabase', icon: '⚡', color: '#3ecf8e' },
-  { name: 'ChatGPT', icon: '🤖', color: '#10a37f' },
-  { name: 'Gemini', icon: '✨', color: '#4285f4' },
-  { name: 'Claude', icon: '🧠', color: '#d4a853' },
-  { name: 'WordPress', icon: '🌐', color: '#21759b' },
+  { url: 'https://www.youtube.com/', name: 'YouTube', icon: '▶️', color: '#ff0000' },
+  { url: 'https://web.whatsapp.com/', name: 'WhatsApp', icon: '💬', color: '#25d366' },
+  { url: 'https://www.facebook.com/', name: 'Facebook', icon: '📘', color: '#1877f2' },
+  { url: 'https://x.com/', name: 'Twitter X', icon: '🐦', color: '#000000' },
+  { url: 'https://www.tiktok.com/', name: 'TikTok', icon: '🎵', color: '#010101' },
+  { url: 'https://www.instagram.com/', name: 'Instagram', icon: '📸', color: '#e1306c' },
+  { url: 'https://web.telegram.org/', name: 'Telegram', icon: '✈️', color: '#0088cc' },
+  { url: 'https://app.netlify.com/', name: 'Netlify', icon: '🚀', color: '#00c7b7' },
+  { url: 'https://github.com/', name: 'GitHub', icon: '🐙', color: '#24292f' },
+  { url: 'https://vercel.com/', name: 'Vercel', icon: '▲', color: '#000000' },
+  { url: 'https://console.firebase.google.com/', name: 'Firebase', icon: '🔥', color: '#ff6d00' },
+  { url: 'https://supabase.com/dashboard', name: 'Supabase', icon: '⚡', color: '#3ecf8e' },
+  { url: 'https://chatgpt.com/', name: 'ChatGPT', icon: '🤖', color: '#10a37f' },
+  { url: 'https://gemini.google.com/', name: 'Gemini', icon: '✨', color: '#4285f4' },
+  { url: 'https://claude.ai/', name: 'Claude', icon: '🧠', color: '#d4a853' },
+  { url: 'https://wordpress.com/', name: 'WordPress', icon: '🌐', color: '#21759b' },
 ];
 
 const ESmartTab: React.FC = () => {
@@ -121,7 +121,11 @@ const ESmartTab: React.FC = () => {
         >
           <div className="flex flex-wrap gap-2">
             {INTEGRATIONS.map((i) => (
-              <div
+              <a
+                href={i.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Open ${i.name} (new tab)`}
                 key={i.name}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full"
                 style={{
@@ -133,7 +137,7 @@ const ESmartTab: React.FC = () => {
                 <span className="text-[10px] font-semibold" style={{ color: i.color === '#000000' || i.color === '#010101' ? '#374151' : i.color }}>
                   {i.name}
                 </span>
-              </div>
+              </a>
             ))}
           </div>
         </div>

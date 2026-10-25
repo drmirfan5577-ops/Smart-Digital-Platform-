@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Search, Mic, Camera, ChevronLeft, ChevronRight, RefreshCw, X } from 'lucide-react';
-import { useAppStore } from '@/stores/appStore';
+import { Search, Camera, X } from 'lucide-react';
 
 interface BrowserBarProps {
   onSearch: (url: string) => void;
@@ -15,13 +14,15 @@ const BrowserBar: React.FC<BrowserBarProps> = ({ onSearch, currentUrl }) => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    let url = query.trim();
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      if (url.includes('.') && !url.includes(' ')) {
-        url = 'https://' + url;
-      } else {
-        url = `https://www.google.com/search?q=${encodeURIComponent(url)}`;
-      }
+    const input = query.trim();
+    let url: string;
+    try {
+      const candidate = new URL(/^https?:\/\//i.test(input) ? input : `https://${input}`);
+      url = !/\s/.test(input) && candidate.hostname.includes('.') && !/^[a-z][a-z\d+.-]*:/i.test(input.replace(/^https?:/i, ''))
+        ? candidate.href
+        : `https://www.google.com/search?q=${encodeURIComponent(input)}`;
+    } catch {
+      url = `https://www.google.com/search?q=${encodeURIComponent(input)}`;
     }
     onSearch(url);
   };
@@ -74,6 +75,7 @@ const BrowserBar: React.FC<BrowserBarProps> = ({ onSearch, currentUrl }) => {
         >
           <Search size={14} className="text-gray-400 flex-shrink-0" />
           <input
+            aria-label="Search or enter a website address"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -84,16 +86,12 @@ const BrowserBar: React.FC<BrowserBarProps> = ({ onSearch, currentUrl }) => {
             style={{ fontSize: 13 }}
           />
           {query && (
-            <button type="button" onClick={() => setQuery('')} className="text-gray-400 hover:text-gray-600">
+            <button aria-label="Clear search" type="button" onClick={() => setQuery('')} className="text-gray-400 hover:text-gray-600">
               <X size={12} />
             </button>
           )}
-          <button type="button" className="text-gray-400 hover:text-blue-500 transition-colors">
-            <Mic size={14} />
-          </button>
-          <button type="button" className="text-gray-400 hover:text-blue-500 transition-colors">
-            <Camera size={14} />
-          </button>
+          <button type="submit" aria-label="Open website or search" className="text-blue-600 hover:text-blue-800 transition-colors"><Search size={16} /></button>
+          <a href="https://lens.google/" target="_blank" rel="noopener noreferrer" aria-label="Open Google Lens image search" className="text-gray-400 hover:text-blue-500 transition-colors"><Camera size={14} /></a>
         </div>
       </form>
     </div>

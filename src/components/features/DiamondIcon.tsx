@@ -10,18 +10,16 @@ const DiamondIcon: React.FC<DiamondIconProps> = ({ app, size = 60, onClick }) =>
   const s = size;
   const innerS = s * 0.7;
 
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    } else if (app.url) {
-      window.open(app.url, '_blank');
-    }
-  };
+  const Component = onClick ? 'button' : 'a';
 
   return (
-    <button
+    <Component
+      href={onClick ? undefined : app.url}
+      target={onClick ? undefined : "_blank"}
+      rel={onClick ? undefined : "noopener noreferrer"}
+      title={onClick ? `Explore ${app.name}` : `Open ${app.name} (new tab)`}
       className="flex flex-col items-center gap-1 group"
-      onClick={handleClick}
+      onClick={onClick}
       style={{ width: s + 16, minHeight: s + 28 }}
     >
       {/* Diamond container */}
@@ -76,7 +74,7 @@ const DiamondIcon: React.FC<DiamondIconProps> = ({ app, size = 60, onClick }) =>
       >
         {app.name}
       </span>
-    </button>
+    </Component>
   );
 };
 

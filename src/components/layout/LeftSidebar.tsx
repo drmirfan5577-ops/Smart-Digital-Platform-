@@ -29,14 +29,17 @@ const LeftSidebar: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
         {LEFT_SIDEBAR_ITEMS.map((item) => (
-          <button
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
             key={item.id}
             className="w-full flex flex-col items-center gap-1 px-2 py-2.5 hover:bg-white/60 transition-colors rounded-lg mx-1"
             style={{ width: 'calc(100% - 8px)' }}
           >
             <span className="text-xl">{item.icon}</span>
             <span className="text-[9px] text-gray-500 font-medium text-center leading-tight">{item.label}</span>
-          </button>
+          </a>
         ))}
       </div>
     </div>

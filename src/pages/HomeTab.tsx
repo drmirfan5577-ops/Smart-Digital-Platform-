@@ -8,45 +8,16 @@ import { useAppStore } from '@/stores/appStore';
 
 const HomeTab: React.FC = () => {
   const { setCurrentUrl } = useAppStore();
-  const [embeddedUrl, setEmbeddedUrl] = useState('');
-  const [showBrowser, setShowBrowser] = useState(false);
-
+  const [category, setCategory] = useState('all');
+  const hubCategories: Record<string, string> = {
+    'islamic-hub': 'islamic', 'smart-hub': 'utility', 'social-hub': 'social',
+    'news-hub': 'news', 'ai-hub': 'ai', 'general-hub': 'all',
+  };
   const handleSearch = (url: string) => {
     setCurrentUrl(url);
-    setEmbeddedUrl(url);
-    setShowBrowser(true);
+    window.location.assign(url);
   };
-
-  const handleAppClick = (url: string) => {
-    if (url) {
-      handleSearch(url);
-    }
-  };
-
-  if (showBrowser && embeddedUrl) {
-    return (
-      <div className="flex flex-col" style={{ height: 'calc(100vh - 120px)' }}>
-        <div className="px-3 py-2 glass-card border-b border-white/40">
-          <BrowserBar onSearch={handleSearch} currentUrl={embeddedUrl} />
-          <div className="flex items-center gap-2 px-1 mt-1">
-            <button
-              onClick={() => setShowBrowser(false)}
-              className="text-xs text-gray-500 hover:text-gray-800 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-white/60"
-            >
-              ← Home
-            </button>
-            <span className="text-xs text-gray-400 truncate flex-1">{embeddedUrl}</span>
-          </div>
-        </div>
-        <iframe
-          src={embeddedUrl}
-          className="flex-1 w-full border-0"
-          title="Browser"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-navigation allow-popups"
-        />
-      </div>
-    );
-  }
+  const apps = category === 'all' ? HOME_APPS : HOME_APPS.filter((app) => app.category === category);
 
   return (
     <div className="fade-in">
@@ -72,16 +43,22 @@ const HomeTab: React.FC = () => {
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-gray-700">🚀 Quick Access</span>
-            <span className="text-[10px] text-gray-400">Tap to open</span>
+            <span className="text-[10px] text-gray-400">Links open in a new tab</span>
           </div>
 
+          <label className="block text-xs text-gray-600 mb-4">
+            Explore
+            <select aria-label="Filter apps and platforms" value={category} onChange={(e) => setCategory(e.target.value)} className="ml-2 rounded-lg border p-1 bg-white">
+              {['all', 'islamic', 'social', 'news', 'utility', 'media', 'ai'].map((value) => <option key={value} value={value}>{value === 'all' ? 'All apps & sites' : value.toUpperCase()}</option>)}
+            </select>
+          </label>
           <div className="grid grid-cols-4 gap-2 justify-items-center">
-            {HOME_APPS.map((app) => (
+            {apps.map((app) => (
               <DiamondIcon
                 key={app.id}
                 app={app}
                 size={56}
-                onClick={() => handleAppClick(app.url || '')}
+                onClick={app.category === 'hub' ? () => setCategory(hubCategories[app.id]) : undefined}
               />
             ))}
           </div>
